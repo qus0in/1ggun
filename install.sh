@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+VERSION="1.0.0"
 REPO_ARCHIVE="https://github.com/qus0in/1ggun/archive/refs/heads/main.tar.gz"
 AGENTS_DIR=".agents"
 
