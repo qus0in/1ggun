@@ -82,11 +82,13 @@ curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash
 
 ## 에이전트별 목소리
 
-| 에이전트        | 인자    | 목소리    |
-| --------------- | ------- | --------- |
-| Claude Code     | `cc`    | 조선 일꾼 |
-| Codex           | `codex` | 일본 일꾼 |
-| Antigravity CLI | `agy`   | 명 일꾼   |
+| 에이전트        | 인자    | 목소리    | 비고 |
+| --------------- | ------- | --------- | ---- |
+| Claude Code     | `cc`    | 조선 일꾼 | |
+| Codex           | `codex` | 일본 일꾼 | 훅 실행 시 사용자 승인 필요 |
+| Antigravity CLI | `agy`   | 명 일꾼   | |
+
+> **Codex**: 훅 명령어 실행 전 터미널에서 승인 여부를 묻는 프롬프트가 표시됨. 매번 수동으로 허용해야 사운드가 재생됨.
 
 ## 이벤트 매핑
 
