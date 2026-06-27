@@ -7,14 +7,16 @@
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232b2b2b'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='18' fill='%23e8d5a3'%3E꾼%3C/text%3E%3C/svg%3E">
 
-  <meta property="og:title" content="1ggun">
-  <meta property="og:description" content="Claude Code, Codex, Antigravity CLI에 사운드 훅 추가. 임진록 2+ 조선의 반격 일꾼 목소리가 이벤트에 반응.">
+  <meta property="og:title" content="임진록 2 일꾼 목소리로 에이전트 알림 받기">
+  <meta property="og:description" content="Claude Code, Codex, Antigravity CLI에 사운드 훅 추가. 조선·명·일본 일꾼이 이벤트마다 말을 건넵니다.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://qus0in.github.io/1ggun/">
 
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/variable/pretendardvariable-dynamic-subset.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css">
   <style>
     body {
       font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -24,8 +26,9 @@
       font-family: 'Paperlogy', serif;
     }
     .hero { background: #f8f9fa; border-bottom: 1px solid #dee2e6; }
+    .hero h1 { font-family: 'Dancing Script', cursive; font-size: 3rem; }
     pre {
-      background: #f1f3f5;
+      background: #f6f8fa;
       border-radius: 6px;
       padding: 1rem;
       font-size: .875rem;
@@ -33,6 +36,7 @@
       white-space: pre;
       word-break: normal;
     }
+    pre code.hljs { background: transparent; padding: 0; font-size: inherit; }
     .table th { white-space: nowrap; }
     footer a { color: inherit; }
 
@@ -62,25 +66,25 @@
 
     <h3 class="h6 mt-4 mb-2">macOS</h3>
     <p class="text-secondary small"><code>jq</code> 미설치 시 Homebrew로 먼저 설치:</p>
-    <pre>brew install jq
-curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash</pre>
+    <pre><code class="language-shell">brew install jq
+curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash</code></pre>
 
     <h3 class="h6 mt-4 mb-2">Linux</h3>
-    <pre># Debian / Ubuntu
+    <pre><code class="language-shell"># Debian / Ubuntu
 sudo apt install -y curl jq
 
 # Fedora / RHEL
-sudo dnf install -y curl jq</pre>
-    <pre>curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash</pre>
+sudo dnf install -y curl jq</code></pre>
+    <pre><code class="language-shell">curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash</code></pre>
 
     <h3 class="h6 mt-4 mb-2">Windows</h3>
     <p class="text-secondary small"><strong>Git Bash 또는 WSL2 환경 권장.</strong> PowerShell · cmd 미지원.<br>
     JSON 처리 도구 자동 감지 순서: 파일 미존재 시 직접 생성 → <code>jq</code> → <code>python</code> → 사용자 확인.</p>
     <p class="text-secondary small fw-semibold mb-1">Git Bash (<a href="https://gitforwindows.org/" target="_blank" rel="noopener">Git for Windows</a> 포함):</p>
-    <pre>curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash</pre>
+    <pre><code class="language-shell">curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash</code></pre>
     <p class="text-secondary small fw-semibold mb-1">WSL2 (Ubuntu 등):</p>
-    <pre>sudo apt install -y curl jq
-curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash</pre>
+    <pre><code class="language-shell">sudo apt install -y curl jq
+curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash</code></pre>
 
     <h3 class="h6 mt-4 mb-2">생성/수정 파일</h3>
     <pre>.agents/
@@ -210,7 +214,7 @@ curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash
     <div class="d-flex flex-column gap-3">
       <div>
         <h3 class="h6 mb-1">Claude Code — <code>.claude/settings.json</code></h3>
-        <pre>{
+        <pre><code class="language-json">{
   "hooks": {
     "SessionStart":      [{"hooks": [{"type": "command", "command": "bash .agents/sound_hook.sh cc SessionStart",      "timeout": 30}]}],
     "UserPromptSubmit":  [{"hooks": [{"type": "command", "command": "bash .agents/sound_hook.sh cc UserPromptSubmit",  "timeout": 30}]}],
@@ -218,28 +222,28 @@ curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash
     "Notification":      [{"hooks": [{"type": "command", "command": "bash .agents/sound_hook.sh cc Notification",      "timeout": 30}]}],
     "Stop":              [{"hooks": [{"type": "command", "command": "bash .agents/sound_hook.sh cc Stop",              "timeout": 30}]}]
   }
-}</pre>
+}</code></pre>
       </div>
       <div>
         <h3 class="h6 mb-1">Codex — <code>.codex/hooks.json</code></h3>
-        <pre>{
+        <pre><code class="language-json">{
   "hooks": {
     "SessionStart":      [{"hooks": [{"type": "command", "command": "bash .agents/sound_hook.sh codex SessionStart",      "timeout": 30}]}],
     "UserPromptSubmit":  [{"hooks": [{"type": "command", "command": "bash .agents/sound_hook.sh codex UserPromptSubmit",  "timeout": 30}]}],
     "PermissionRequest": [{"hooks": [{"type": "command", "command": "bash .agents/sound_hook.sh codex PermissionRequest", "timeout": 30}]}],
     "Stop":              [{"hooks": [{"type": "command", "command": "bash .agents/sound_hook.sh codex Stop",              "timeout": 30}]}]
   }
-}</pre>
+}</code></pre>
       </div>
       <div>
         <h3 class="h6 mb-1">Antigravity CLI — <code>.agents/hooks.json</code></h3>
-        <pre>{
+        <pre><code class="language-json">{
   "AGY": {
     "enabled": true,
     "PreInvocation": [{"type": "command", "command": "bash sound_hook.sh agy PreInvocation", "timeout": 30}],
     "Stop":          [{"type": "command", "command": "bash sound_hook.sh agy Stop",          "timeout": 30}]
   }
-}</pre>
+}</code></pre>
       </div>
     </div>
   </section>
@@ -284,6 +288,8 @@ curl -fsSL https://raw.githubusercontent.com/qus0in/1ggun/main/install.sh | bash
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
 <script>
   const BASE = 'https://raw.githubusercontent.com/qus0in/1ggun/main/.agents/sound/';
   let current = null;
